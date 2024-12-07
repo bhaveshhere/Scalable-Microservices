@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: post-service
+  template:
+    metadata:
+      labels:
+        app: post-service
+    spec:
+      containers:
+      - name: post-service
+        image: bhavesh9876/post-service:latest # Replace with your image name and tag
+        ports:
+        - containerPort: 8003 # Ensure this matches the port used by the FastAPI app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8003         # Exposed port for the service
+    targetPort: 8003   # Port on the container
+    nodePort: 31003    # New nodePort to avoid conflicts
+  selector:
+    app: post-service
